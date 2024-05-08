@@ -35,7 +35,6 @@ class Decoder:
     def __call__(
         self,
         input_ids: int,
-        attention_mask: Optional[torch.Tensor] = None,
         encoder_hidden_states: Optional[torch.FloatTensor] = None,
         past_key_values: Optional[Tuple[Tuple[torch.FloatTensor]]] = None,
     ) -> Tuple:
@@ -49,9 +48,7 @@ class Decoder:
 
             layer_outputs = decoder_layer(
                 hidden_states,
-                attention_mask=attention_mask,
                 encoder_hidden_states=encoder_hidden_states,
-                encoder_attention_mask=None,
                 past_key_value=past_key_value,
             )
             hidden_states = layer_outputs[0]
@@ -68,13 +65,11 @@ def decode(
     decoder: Decoder,
     *,
     input_ids,
-    attention_mask,
     encoder_hidden_states,
     past_key_values,
 ):
     hidden_states, past_key_values = decoder(
         input_ids=input_ids,
-        attention_mask=attention_mask,
         encoder_hidden_states=encoder_hidden_states,
         past_key_values=past_key_values,
     )

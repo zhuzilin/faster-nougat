@@ -25,20 +25,14 @@ class MBartDecoderLayer:
     def __call__(
         self,
         hidden_states: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
         encoder_hidden_states: Optional[torch.Tensor] = None,
-        encoder_attention_mask: Optional[torch.Tensor] = None,
         past_key_value: Optional[Tuple[torch.Tensor]] = None,
     ) -> torch.Tensor:
         """
         Args:
             hidden_states (`torch.FloatTensor`): input to the layer of shape `(batch, seq_len, embed_dim)`
-            attention_mask (`torch.FloatTensor`): attention mask of size
-                `(batch, 1, tgt_len, src_len)` where padding elements are indicated by very large negative values.
             encoder_hidden_states (`torch.FloatTensor`):
                 cross attention input to the layer of shape `(batch, seq_len, embed_dim)`
-            encoder_attention_mask (`torch.FloatTensor`): encoder attention mask of size
-                `(batch, 1, tgt_len, src_len)` where padding elements are indicated by very large negative values.
             past_key_value (`Tuple(torch.FloatTensor)`): cached past key and value projection states
         """
         residual = hidden_states
@@ -51,7 +45,6 @@ class MBartDecoderLayer:
         hidden_states, present_key_value = self.self_attn(
             hidden_states=hidden_states,
             past_key_value=self_attn_past_key_value,
-            attention_mask=attention_mask,
         )
 
         hidden_states = residual + hidden_states
@@ -65,7 +58,6 @@ class MBartDecoderLayer:
         hidden_states, cross_attn_present_key_value = self.encoder_attn(
             hidden_states=hidden_states,
             key_value_states=encoder_hidden_states,
-            attention_mask=encoder_attention_mask,
             past_key_value=cross_attn_past_key_value,
         )
 

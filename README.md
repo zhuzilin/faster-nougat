@@ -1,6 +1,6 @@
 ## faster-nougat
 
-Implementation of nougat that focuses on processing one file at a time, currently implements with MLX.
+Implementation of nougat that focuses on processing pdf locally, currently implements with MLX.
 
 ### benchmark
 

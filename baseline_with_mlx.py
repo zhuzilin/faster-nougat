@@ -22,14 +22,12 @@ with torch.no_grad():
 
     decoder = Decoder(model.decoder)
     decoder_input_ids = 0
-    attention_mask = mx.zeros((1, 1, 1, MAX_OUTPUT_LEN))
     outputs = [0]
     past_key_values = None
     for i in tqdm(range(MAX_OUTPUT_LEN)):
         logits, past_key_values = decode(
             decoder,
             input_ids=decoder_input_ids,
-            attention_mask=attention_mask[:, :, :, :i + 1],
             encoder_hidden_states=encoder_hidden_states,
             past_key_values=past_key_values,
         )

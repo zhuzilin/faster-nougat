@@ -17,12 +17,14 @@ def get_model_and_processor(model_name):
     return model, processor
 
 
-def extract_single_pdf_page_as_image(filename: str, page_idx: int):
+def extract_single_pdf_page_as_image(filename: str, page_idx: int, *, resolution=200):
     assert filename.endswith(
         ".pdf"
     ), f"{filename} does not end with .pdf, is it a pdf file?"
     assert page_idx > 0, f"page_idx starts from 1 to align with most pdf readers"
-    with WandImage(filename=f"{filename}[{page_idx - 1}]", resolution=200) as wand_img:
+    with WandImage(
+        filename=f"{filename}[{page_idx - 1}]", resolution=resolution
+    ) as wand_img:
         wand_img.background_color = Color("white")
         wand_img.alpha_channel = "remove"
         numpy_array = np.array(wand_img)
@@ -30,14 +32,14 @@ def extract_single_pdf_page_as_image(filename: str, page_idx: int):
     return image
 
 
-def extract_pdf_pages_as_images(filename: str):
+def extract_pdf_pages_as_images(filename: str, *, resolution=200):
     assert filename.endswith(
         ".pdf"
     ), f"{filename} does not end with .pdf, is it a pdf file?"
     print(f"start extracting {filename}")
     # Load the image using wand
     images = []
-    with WandImage(filename=filename, resolution=200) as wand_imgs:
+    with WandImage(filename=filename, resolution=resolution) as wand_imgs:
         print(f"the pdf has {len(wand_imgs.sequence)} pages")
         for wand_img in wand_imgs.sequence:
             wand_img.background_color = Color("white")

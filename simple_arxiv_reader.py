@@ -27,6 +27,16 @@ parser.add_argument(
     default=None,
     help="The pages to read, default will process all pages, starts from 1",
 )
+parser.add_argument(
+    "--ignore_pages",
+    type=int,
+    nargs="+",
+    default=None,
+    help="The pages to ignore, default will process all pages, starts from 1",
+)
+parser.add_argument(
+    "--resolution", type=int, default=200, help="the resolution of pdf image"
+)
 # llm configs
 parser.add_argument("--llm_model_name", type=str, default="deepseek-chat")
 parser.add_argument("--llm_base_url", type=str, default="https://api.deepseek.com/")
@@ -50,21 +60,34 @@ if __name__ == "__main__":
     if not os.path.exists(pdf_path):
         os.system(f"wget {args.arxiv_url} -O {pdf_path}")
 
-    images = extract_pdf_pages_as_images(pdf_path)
-
     if args.pages is not None:
+        images = None
         args.pages = [page_idx - 1 for page_idx in args.pages]
     else:
-        args.pages = range(len(images))
+        images = extract_pdf_pages_as_images(pdf_path)
+        args.pages = list(range(len(images)))
+
+    if args.ignore_pages is not None:
+        args.pages = [
+            page_idx for page_idx in args.pages if page_idx not in args.ignore_pages
+        ]
 
     model, processor = None, None
+    warning_for_exist_files = True
     for page_idx in tqdm(args.pages):
-        image = images[page_idx]
+
         page_path = os.path.join(args.cache_dir, f"page_{page_idx + 1}.mmd")
         if os.path.exists(page_path) and not args.f:
-            print(f"{page_path} exists, pass -f to force overwrite")
+            if warning_for_exist_files:
+                print(
+                    f"some output file exists, will skip. please pass -f to force overwrite"
+                )
+                warning_for_exist_files = False
             continue
 
+        if images is None:
+            images = extract_pdf_pages_as_images(pdf_path, args.resolution)
+        image = images[page_idx]
         if model is None:
             model, processor = get_model_and_processor(args.nougat_hf_model_name)
 
@@ -108,5 +131,8 @@ if __name__ == "__main__":
         stream=True,
     )
 
+    answer = ""
     for chunk in response:
-        print(chunk.choices[0].delta.content, end="", flush=True)
+        answer_section = chunk.choices[0].delta.content
+        answer += answer_section
+        print(answer_section, end="", flush=True)

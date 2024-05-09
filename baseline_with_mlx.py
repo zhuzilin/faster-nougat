@@ -17,10 +17,11 @@ start_time = time()
 with torch.no_grad():
     encoder_outputs = model.encoder(pixel_values)
     encoder_hidden_states = encoder_outputs[0]
-    encoder_hidden_states = convert(encoder_hidden_states)
+    encoder_hidden_states = convert(encoder_hidden_states).astype(mx.bfloat16)
 
     decoder = MBartDecoder(model.decoder)
-    decoder.freeze()
+    decoder.eval()
+    decoder.set_dtype(mx.bfloat16)
     new_token = 0
     outputs = [0]
     past_key_values = None

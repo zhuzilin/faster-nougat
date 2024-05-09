@@ -41,7 +41,9 @@ class MBartDecoderLayer(nn.Module):
 
         # Self Attention
         # decoder uni-directional self-attention cached key/values tuple is at positions 1,2
-        self_attn_past_key_value = past_key_value[:2] if past_key_value is not None else None
+        self_attn_past_key_value = (
+            past_key_value[:2] if past_key_value is not None else None
+        )
         # add present self-attn cache to positions 1,2 of present_key_value tuple
         hidden_states, present_key_value = self.self_attn(
             hidden_states=hidden_states,
@@ -55,7 +57,9 @@ class MBartDecoderLayer(nn.Module):
         hidden_states = self.encoder_attn_layer_norm(hidden_states)
 
         # cross_attn cached key/values tuple is at positions 3,4 of present_key_value tuple
-        cross_attn_past_key_value = past_key_value[-2:] if past_key_value is not None else None
+        cross_attn_past_key_value = (
+            past_key_value[-2:] if past_key_value is not None else None
+        )
         hidden_states, cross_attn_present_key_value = self.encoder_attn(
             hidden_states=hidden_states,
             key_value_states=encoder_hidden_states,

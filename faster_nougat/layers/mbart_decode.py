@@ -46,7 +46,9 @@ class MBartDecoder(nn.Module):
         # decoder layers
         next_decoder_cache = ()
         for idx, decoder_layer in enumerate(self.layers):
-            past_key_value = past_key_values[idx] if past_key_values is not None else None
+            past_key_value = (
+                past_key_values[idx] if past_key_values is not None else None
+            )
 
             layer_outputs = decoder_layer(
                 hidden_states,

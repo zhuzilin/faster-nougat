@@ -10,6 +10,7 @@ def deconvert(mlx_module):
     else:
         raise NotImplementedError()
 
+
 def convert(hf_module):
     if isinstance(hf_module, torch.Tensor):
         return mx.array(hf_module.numpy())

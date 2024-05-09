@@ -20,10 +20,12 @@ class MBartDecoderAttention(nn.Module):
         self.v_proj = convert(self.hf_module.v_proj)
 
         self.out_proj = convert(self.hf_module.out_proj)
-    
+
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         # hardcode as bs=1, seqlen=1
-        return tensor.reshape(bsz, seq_len, self.num_heads, self.head_dim).transpose(0, 2, 1, 3)
+        return tensor.reshape(bsz, seq_len, self.num_heads, self.head_dim).transpose(
+            0, 2, 1, 3
+        )
 
     def __call__(
         self,
@@ -67,7 +69,6 @@ class MBartDecoderAttention(nn.Module):
             # self_attention
             key_states = self._shape(self.k_proj(hidden_states), -1, bsz)
             value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
-
 
         past_key_value = (key_states, value_states)
 

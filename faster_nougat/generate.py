@@ -5,7 +5,7 @@ from .convert import convert
 from .layers.mbart_decode import MBartDecoder
 
 
-def generate(model, pixel_values, *, max_new_tokens=4096):
+def generate(model, pixel_values, *, max_new_tokens=4096, disable_tqdm=False):
     with torch.no_grad():
         encoder_outputs = model.encoder(pixel_values)
         encoder_hidden_states = encoder_outputs[0]
@@ -17,7 +17,7 @@ def generate(model, pixel_values, *, max_new_tokens=4096):
         new_token = 0
         outputs = [0]
         past_key_values = None
-        for _ in tqdm(range(max_new_tokens)):
+        for _ in tqdm(range(max_new_tokens), disable=disable_tqdm):
             logits, past_key_values = decoder(
                 input_ids=new_token,
                 encoder_hidden_states=encoder_hidden_states,

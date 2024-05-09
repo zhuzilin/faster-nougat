@@ -1,9 +1,12 @@
 from time import time
-from utils import get_model_and_processor, extract_pdf_as_image
+from faster_nougat.utils import (
+    get_model_and_processor,
+    extract_single_pdf_page_as_image,
+)
 
 
 model, processor = get_model_and_processor("facebook/nougat-small")
-image = extract_pdf_as_image('1706.03762v7.pdf', 1)
+image = extract_single_pdf_page_as_image("1706.03762v7.pdf", 2)
 pixel_values = processor(image, return_tensors="pt").pixel_values
 
 # somehow running in bfloat16 will make it slower...
@@ -11,7 +14,7 @@ pixel_values = processor(image, return_tensors="pt").pixel_values
 # model.to(torch.bfloat16)
 # pixel_values = pixel_values.to(torch.bfloat16)
 
-print("start generation")
+print("start parsing")
 start_time = time()
 # generate transcription (here we only generate 30 tokens)
 outputs = model.generate(

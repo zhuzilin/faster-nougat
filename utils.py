@@ -5,7 +5,7 @@ from wand.image import Image as WandImage
 from transformers import NougatProcessor, VisionEncoderDecoderModel
 
 
-def get_model_and_processor(model_name="facebook/nougat-base"):
+def get_model_and_processor(model_name):
     print("start loading model and processor")
     start = time()
     processor = NougatProcessor.from_pretrained(model_name)

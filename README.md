@@ -2,7 +2,7 @@
 
 Implementation of nougat that focuses on processing pdf locally.
 
-I hope this could be a helpful componenet for a good open source RAG component.
+I hope this could be a helpful component for a good open source RAG system.
 
 ### Installation
 

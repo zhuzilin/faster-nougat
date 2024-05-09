@@ -55,7 +55,7 @@ if __name__ == "__main__":
     if args.pages is not None:
         args.pages = [page_idx - 1 for page_idx in args.pages]
     else:
-        args.pages = range(len(args.pages))
+        args.pages = range(len(images))
 
     model, processor = None, None
     for page_idx in tqdm(args.pages):

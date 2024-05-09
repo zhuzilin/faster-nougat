@@ -6,8 +6,9 @@ from ..convert import convert
 from .mbart_attention import MBartDecoderAttention
 
 
-class MBartDecoderLayer:
+class MBartDecoderLayer(nn.Module):
     def __init__(self, hf_module):
+        super().__init__()
         self.hf_module = hf_module
 
         self.self_attn_layer_norm = convert(self.hf_module.self_attn_layer_norm)

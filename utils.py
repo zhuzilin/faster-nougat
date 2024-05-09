@@ -1,13 +1,18 @@
 import numpy as np
+from time import time
 from PIL import Image as PILImage
 from wand.image import Image as WandImage
 from transformers import NougatProcessor, VisionEncoderDecoderModel
 
 
-def get_model_and_processor():
-    processor = NougatProcessor.from_pretrained("facebook/nougat-base")
-    model = VisionEncoderDecoderModel.from_pretrained("facebook/nougat-base")
+def get_model_and_processor(model_name="facebook/nougat-base"):
+    print("start loading model and processor")
+    start = time()
+    processor = NougatProcessor.from_pretrained(model_name)
+    model = VisionEncoderDecoderModel.from_pretrained(model_name)
     model.eval()
+    end = time()
+    print(f"time: {end - start:.2f} s")
     return model, processor
 
 

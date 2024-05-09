@@ -1,11 +1,15 @@
 from time import time
-
+import torch
 from utils import get_model_and_processor, extract_pdf_as_image
 
 
 model, processor = get_model_and_processor()
 image = extract_pdf_as_image('1706.03762v7.pdf', 1)
 pixel_values = processor(image, return_tensors="pt").pixel_values
+
+# running in bfloat16 on cpu will make it slower...
+# model.to(torch.bfloat16)
+# pixel_values = pixel_values.to(torch.bfloat16)
 
 print("start generation")
 start_time = time()

@@ -1,11 +1,13 @@
 import torch
 import mlx.core as mx
+import mlx.nn as nn
 from typing import Optional, Tuple
-from ..convert import convert, deconvert
+from ..convert import convert
 
 
-class MBartDecoderAttention:
+class MBartDecoderAttention(nn.Module):
     def __init__(self, hf_module):
+        super().__init__()
         self.hf_module = hf_module
 
         self.num_heads = self.hf_module.num_heads

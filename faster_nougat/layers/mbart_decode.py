@@ -1,11 +1,13 @@
 import torch
+import mlx.nn as nn
 from typing import Optional, Tuple
-from .layers.mbart_decoder_layer import MBartDecoderLayer
-from .convert import convert
+from .mbart_decoder_layer import MBartDecoderLayer
+from ..convert import convert
 
 
-class Decoder:
+class MBartDecoder(nn.Module):
     def __init__(self, hf_model):
+        super().__init__()
         self.lm_head = convert(hf_model.lm_head)
 
         self.hf_model = hf_model.model.decoder
@@ -56,24 +58,7 @@ class Decoder:
             next_decoder_cache += (layer_outputs[1],)
 
         hidden_states = self.layer_norm(hidden_states)
+        logits = self.lm_head(hidden_states)
 
         self.decode_count += 1
-        return hidden_states, next_decoder_cache
-
-
-def decode(
-    decoder: Decoder,
-    *,
-    input_ids,
-    encoder_hidden_states,
-    past_key_values,
-):
-    hidden_states, past_key_values = decoder(
-        input_ids=input_ids,
-        encoder_hidden_states=encoder_hidden_states,
-        past_key_values=past_key_values,
-    )
-
-    logits = decoder.lm_head(hidden_states)
-
-    return logits, past_key_values
+        return logits, next_decoder_cache

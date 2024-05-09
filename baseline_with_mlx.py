@@ -2,7 +2,7 @@ from time import time
 from utils import get_model_and_processor, extract_pdf_as_image
 from faster_nougat import generate
 
-model, processor = get_model_and_processor("facebook/nougat-base")
+model, processor = get_model_and_processor("facebook/nougat-small")
 
 image = extract_pdf_as_image('1706.03762v7.pdf', 1)
 pixel_values = processor(image, return_tensors="pt").pixel_values

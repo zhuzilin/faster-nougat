@@ -10,10 +10,9 @@ pixel_values = processor(image, return_tensors="pt").pixel_values
 print("start generation")
 start_time = time()
 outputs = generate(model, pixel_values, max_new_tokens=4096)
-end_time = time()
-
 sequence = processor.batch_decode([outputs], skip_special_tokens=True)[0]
 sequence = processor.post_process_generation(sequence, fix_markdown=False)
+end_time = time()
 
 print(sequence)
 print(f"time takes: {end_time - start_time}")
